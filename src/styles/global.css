@@ -1,0 +1,4 @@
+:root { --brand: #7C3AED; }
+* { box-sizing: border-box }
+html, body, #root { height: 100% }
+img { display: block; max-width: 100% }

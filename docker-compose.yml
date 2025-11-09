@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  ebm-sso-fe:
+    build: .
+    container_name: ebm-sso-fe
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/app 
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - ebg_sso_fe_network
+
+networks:
+  ebg_sso_fe_network:
+    driver: bridge
