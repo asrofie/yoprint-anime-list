@@ -5,8 +5,10 @@ import PaginationBar from '../features/anime/components/PaginationBar'
 import { useSearchAnimeQuery } from '../features/anime/api/jikanApi'
 import { useAppSelector } from '@/store/hooks'
 import { SkeletonCard } from '@/components/common'
+import { useTranslation } from 'react-i18next'
 
 export default function HomePage() {
+  const { t } = useTranslation()
   const { q, page, limit } = useAppSelector((s) => s.search)
   const { data, isFetching, isError, error } = useSearchAnimeQuery({ q, page, limit }, { skip: q.trim().length === 0 })
 
@@ -14,7 +16,7 @@ export default function HomePage() {
 
   return (
     <Box>
-      <Typography variant="h4" sx={{ mb: 2, fontWeight: 700 }}>Search Anime</Typography>
+      <Typography variant="h4" sx={{ mb: 2, fontWeight: 700 }}>{t('search')}</Typography>
       <SearchBar />
 
       {q.trim().length === 0 && (
@@ -45,3 +47,4 @@ export default function HomePage() {
     </Box>
   )
 }
+

@@ -5,12 +5,14 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { setQuery } from '../slices/searchSlice'
 import React, { useState } from 'react'
 import { useDebounce } from '@/hooks/useDebounce'
+import { useTranslation } from 'react-i18next'
 
 export default function SearchBar() {
   const dispatch = useAppDispatch()
   const qStore = useAppSelector((s) => s.search.q)
   const [value, setValue] = useState(qStore)
   const debounced = useDebounce(value, 250)
+  const { t } = useTranslation()
 
   // Commit debounced term to Redux
   React.useEffect(() => { dispatch(setQuery(debounced)) }, [debounced, dispatch])
@@ -18,7 +20,7 @@ export default function SearchBar() {
   return (
     <TextField
       fullWidth
-      placeholder="Search anime (e.g., My Hero Academia)"
+      placeholder={t('search-placeholder')}
       value={value}
       onChange={(e) => setValue(e.target.value)}
       autoFocus
