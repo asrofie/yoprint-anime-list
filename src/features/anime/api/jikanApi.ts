@@ -15,7 +15,7 @@ export const jikanApi = createApi({
     }),
     getAnimeById: builder.query<DetailResponse, number>({
       query: (id) => `anime/${id}/full`,
-      providesTags: (r, e, id) => [{ type: 'Anime', id }],
+      providesTags: (r, e, id) => { void r; void e; return [{ type: 'Anime', id }] },
     }),
   }),
 })
