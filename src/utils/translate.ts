@@ -1,24 +1,41 @@
-export type TranslateOptions = {
-  signal?: AbortSignal
-}
+export type TranslateOptions = { signal?: AbortSignal }
 
-// Simple translation helper using LibreTranslate-compatible API
-// Note: In production, consider proxying via your backend and handling API keys/rate limits.
-export async function translateText(text: string, targetLang: 'en' | 'malay', opts: TranslateOptions = {}) {
+// Uses Anthropic SDK on the server (SSR/Node) and falls back to
+// calling the local middleware `/api/translate` in the browser.
+export async function translateText(
+  text: string,
+  targetLang: 'en' | 'malay',
+  opts: TranslateOptions = {}
+) {
   if (!text.trim()) return text
-  // Map i18n code to ISO code expected by public translators
-  const target = targetLang === 'malay' ? 'ms' : 'en'
 
-  // LibreTranslate public endpoint (no key) — may be rate-limited
-  const url = 'https://libretranslate.com/translate'
-  const res = await fetch(url, {
+  const isServer = typeof window === 'undefined' || (import.meta as any)?.env?.SSR
+  if (isServer) {
+    const key = (globalThis as any)?.process?.env?.ANTHROPIC_API_KEY || (globalThis as any)?.ANTHROPIC_API_KEY
+    if (!key) return text
+    const { default: Anthropic } = await import('@anthropic-ai/sdk')
+    const client = new Anthropic({ apiKey: key })
+    const targetName = targetLang === 'malay' ? 'Malay' : 'English'
+    const msg = await client.messages.create({
+      model: 'claude-3-haiku-20240307',
+      max_tokens: 512,
+      system: `You are a precise translation engine. Translate the user content into ${targetName}. Preserve line breaks and formatting. Return only the translated text without quotes.`,
+      messages: [{ role: 'user', content: text }],
+    }) as any
+    const out = Array.isArray(msg?.content)
+      ? msg.content.find((c: any) => c.type === 'text')?.text?.trim()
+      : undefined
+    return out && out.length > 0 ? out : text
+  }
+
+  // Browser path: call same-origin middleware to avoid CORS and protect key
+  const res = await fetch('/api/translate', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     signal: opts.signal,
-    body: JSON.stringify({ q: text, source: 'auto', target, format: 'text' }),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, targetLang }),
   })
   if (!res.ok) throw new Error(`Translate failed: ${res.status}`)
-  const data = (await res.json()) as { translatedText?: string }
-  return data.translatedText ?? text
+  const data = (await res.json()) as { text?: string }
+  return data.text ?? text
 }
-
