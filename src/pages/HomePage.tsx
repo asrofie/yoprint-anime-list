@@ -29,15 +29,15 @@ export default function HomePage() {
 
       <Grid container spacing={2} sx={{ mt: 2 }}>
         {isFetching && Array.from({ length: limit }).map((_, i) => (
-          <Grid key={i} item xs={12} sm={6} md={3}><SkeletonCard /></Grid>
+          <Grid key={i} size={{ xs: 12, sm: 6, md: 4 }}><SkeletonCard /></Grid>
         ))}
 
         {!isFetching && data?.data?.length === 0 && q && (
-          <Grid item xs={12}><Alert severity="warning">No results for "{q}"</Alert></Grid>
+          <Grid size={{ xs: 12, md: 6 }}><Alert severity="warning">No results for "{q}"</Alert></Grid>
         )}
 
         {!isFetching && data?.data?.map((anime) => (
-          <Grid key={anime.mal_id} item xs={12} sm={6} md={3}>
+          <Grid key={anime.mal_id} size={{ xs: 12, sm: 6, md: 4 }}>
             <AnimeCard anime={anime} />
           </Grid>
         ))}
@@ -47,4 +47,3 @@ export default function HomePage() {
     </Box>
   )
 }
-

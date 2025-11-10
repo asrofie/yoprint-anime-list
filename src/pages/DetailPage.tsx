@@ -48,10 +48,10 @@ export default function DetailPage() {
       </Breadcrumbs>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          {img && <img src={img} alt={a.title} style={{ width: '100%', borderRadius: 16 }} />}
+        <Grid size={{xs:12, md:4}}>
+            <img src={img} alt={a.title} style={{ width: '100%', borderRadius: 16 }} />
         </Grid>
-        <Grid item xs={12} md={8}>
+        <Grid size={{xs:12, md:8}}>
           <Typography variant="h4" sx={{ fontWeight: 700 }}>{a.title}</Typography>
           {a.title_japanese && <Typography variant="subtitle1" color="text.secondary">{a.title_japanese}</Typography>}
           <Box sx={{ my: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
@@ -85,4 +85,3 @@ export default function DetailPage() {
     </Box>
   )
 }
-
