@@ -3,7 +3,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import ClearIcon from '@mui/icons-material/Clear'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
 import { setQuery } from '../slices/searchSlice'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDebounce } from '@/hooks/useDebounce'
 import { useTranslation } from 'react-i18next'
 
